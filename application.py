@@ -10,8 +10,8 @@ application = Flask(__name__)
 app=application
 
 
-scaler = pickle.load(open(r'C:\Users\Rashid\Desktop\UKDlDs\SelfCode\logistics regression\deployment\Model\standardScalar.pkl','rb'))
-model = pickle.load(open(r'C:\Users\Rashid\Desktop\UKDlDs\SelfCode\logistics regression\deployment\Model\logReg.pkl','rb'))
+scaler = pickle.load(open(r'\Model\standardScalar.pkl','rb'))
+model = pickle.load(open(r'\Model\logReg.pkl','rb'))
 
 @app.route('/')
 def index():
