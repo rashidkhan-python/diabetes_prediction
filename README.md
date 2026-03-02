@@ -45,22 +45,22 @@ https://github.com/rashidkhan-python/diabetes_prediction
 ## Project Structure
 ```text
 .
-+-- application.py
-+-- requirements.txt
-+-- README.md
-+-- .ebextensions/
-�   +-- python.config
-+-- Model/
-�   +-- logReg.pkl
-�   +-- standardScalar.pkl
-+-- templates/
-�   +-- index.html
-�   +-- home.html
-�   +-- single_prediction.html
-+-- Dataset/
-�   +-- diabetes.csv
-+-- Notebook/
-    +-- diabetes_prediction.ipynb
+|-- application.py
+|-- requirements.txt
+|-- README.md
+|-- .ebextensions/
+|   `-- python.config
+|-- Model/
+|   |-- logReg.pkl
+|   `-- standardScalar.pkl
+|-- templates/
+|   |-- index.html
+|   |-- home.html
+|   `-- single_prediction.html
+|-- Dataset/
+|   `-- diabetes.csv
+`-- Notebook/
+    `-- diabetes_prediction.ipynb
 ```
 
 ## Routes
@@ -93,3 +93,4 @@ Rashid Khan
 
 ## License
 MIT License
+
