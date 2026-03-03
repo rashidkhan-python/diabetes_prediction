@@ -1,53 +1,65 @@
-from flask import Flask,request,Response,render_template,jsonify,app
-import pandas as pd
-import numpy as np
+from flask import Flask, request, render_template
 import pickle
 import warnings
-import os, glob, shutil
-warnings.filterwarnings('ignore')
+import os
+
+warnings.filterwarnings("ignore")
 
 application = Flask(__name__)
-app=application
+app = application
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+MODEL_DIR = os.path.join(BASE_DIR, "Model")
+
+scaler_path = os.path.join(MODEL_DIR, "standardScalar.pkl")
+model_path = os.path.join(MODEL_DIR, "logReg.pkl")
+
+with open(scaler_path, "rb") as f:
+    scaler = pickle.load(f)
+
+with open(model_path, "rb") as f:
+    model = pickle.load(f)
 
 
-scaler = pickle.load(open(r'\Model\standardScalar.pkl','rb'))
-model = pickle.load(open(r'\Model\logReg.pkl','rb'))
-
-@app.route('/')
+@app.route("/")
 def index():
-    return render_template('index.html')
+    return render_template("index.html")
 
-@app.route('/predictdata',methods = ['GET','POST'])
+
+@app.route("/predictdata", methods=["GET", "POST"])
 def predict_datapoint():
-    result = ''
+    if request.method == "POST":
+        Pregnancies = int(request.form.get("Pregnancies"))
+        Glucose = float(request.form.get("Glucose"))
+        BloodPressure = float(request.form.get("BloodPressure"))
+        SkinThickness = float(request.form.get("SkinThickness"))
+        Insulin = float(request.form.get("Insulin"))
+        BMI = float(request.form.get("BMI"))
+        DiabetesPedigreeFunction = float(request.form.get("DiabetesPedigreeFunction"))
+        Age = float(request.form.get("Age"))
 
-    if request.method == 'POST':
+        new_data = scaler.transform([[
+            Pregnancies,
+            Glucose,
+            BloodPressure,
+            SkinThickness,
+            Insulin,
+            BMI,
+            DiabetesPedigreeFunction,
+            Age
+        ]])
 
-        Pregnancies=int(request.form.get("Pregnancies"))
-        Glucose = float(request.form.get('Glucose'))
-        BloodPressure = float(request.form.get('BloodPressure'))
-        SkinThickness = float(request.form.get('SkinThickness'))
-        Insulin = float(request.form.get('Insulin'))
-        BMI = float(request.form.get('BMI'))
-        DiabetesPedigreeFunction = float(request.form.get('DiabetesPedigreeFunction'))
-        Age = float(request.form.get('Age'))
+        prediction = model.predict(new_data)
 
-        new_data=scaler.transform([[Pregnancies,Glucose,BloodPressure,SkinThickness,Insulin,BMI,DiabetesPedigreeFunction,Age]])
-        predict=model.predict(new_data)
-
-        new_data=scaler.transform([[Pregnancies,Glucose,BloodPressure,SkinThickness,Insulin,BMI,DiabetesPedigreeFunction,Age]])
-        predict = model.predict(new_data)
-
-        if predict[0] == 1:
-            result = 'Diabetic'
+        if prediction[0] == 1:
+            result = "Diabetic"
         else:
-            result = 'Non-Diabetic'
-        
-        return render_template('single_prediction.html',result=result)
-    
-    else:
-        return render_template('home.html')
+            result = "Non-Diabetic"
+
+        return render_template("single_prediction.html", result=result)
+
+    return render_template("home.html")
 
 
-if __name__=="__main__":
-    app.run(host="0.0.0.0")
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000)
